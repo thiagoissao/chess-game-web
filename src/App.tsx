@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { ChessInstance, ShortMove } from 'chess.js'
 import Chessboard from 'chessboardjsx'
 import './app.css'
+import { getBestMove } from './chess/game-logic'
 
 const Chess = require('chess.js')
 
@@ -15,15 +16,10 @@ const App = () => {
   const handleMove = (move: ShortMove) => {
     if (chess.move(move)) {
       setTimeout(() => {
-        const moves = chess.moves()
-
-        if (moves.length > 0) {
-          const computerMove = moves[Math.floor(Math.random() * moves.length)]
-          chess.move(computerMove)
-          setFen(chess.fen())
-        }
+        const newMove = getBestMove(chess)
+        chess.move(newMove)
+        setFen(chess.fen())
       }, 300)
-
       setFen(chess.fen())
     }
   }
