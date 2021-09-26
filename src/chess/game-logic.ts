@@ -32,27 +32,46 @@ const evaluateBoard = (board: Board) =>
     0
   )
 
-const minimax = (depth: number, game: ChessInstance, isMaxPlayer: boolean) => {
+const minimax = (
+  depth: number,
+  game: ChessInstance,
+  alpha: number,
+  beta: number,
+  isMaxPlayer: boolean
+) => {
   if (depth === 0) return -evaluateBoard(game.board())
   const moves = game.moves()
-
   if (isMaxPlayer) {
     let bestMove = Number.NEGATIVE_INFINITY
+    console.log(bestMove)
     moves.forEach((move) => {
       game.move(move)
-      bestMove = Math.max(bestMove, minimax(depth - 1, game, !isMaxPlayer))
+      bestMove = Math.max(
+        bestMove,
+        minimax(depth - 1, game, alpha, beta, !isMaxPlayer)
+      )
       game.undo()
+
+      alpha = Math.max(alpha, bestMove)
+      if (alpha >= beta) {
+        return bestMove
+      }
     })
-    //fazer a poda alpha-beta aqui
     return bestMove
   }
 
   let bestMove = Number.POSITIVE_INFINITY
   moves.forEach((move) => {
     game.move(move)
-    bestMove = Math.min(bestMove, minimax(depth - 1, game, !isMaxPlayer))
+    bestMove = Math.min(
+      bestMove,
+      minimax(depth - 1, game, alpha, beta, !isMaxPlayer)
+    )
     game.undo()
-    //fazer a poda alpha-beta aqui
+    beta = Math.min(beta, bestMove)
+    if (alpha >= beta) {
+      return bestMove
+    }
   })
   return bestMove
 }
@@ -69,7 +88,13 @@ export const getBestMove = (game: ChessInstance): string => {
 
   newMoves.forEach((move) => {
     game.move(move)
-    const value = minimax(TREE_DEPTH - 1, game, false)
+    const value = minimax(
+      TREE_DEPTH - 1,
+      game,
+      Number.NEGATIVE_INFINITY,
+      Number.POSITIVE_INFINITY,
+      false
+    )
     game.undo()
     if (value >= bestMove) {
       bestMove = value
