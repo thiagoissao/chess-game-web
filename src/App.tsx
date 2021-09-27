@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { ChessInstance, ShortMove } from 'chess.js'
 import Chessboard from 'chessboardjsx'
 import './app.css'
-import { getBestMove } from './chess/game-logic'
+import { getBestMove, getRandomMove } from './chess/game-logic'
 
 const Chess = require('chess.js')
 
@@ -16,7 +16,7 @@ const App = () => {
   const handleMove = (move: ShortMove) => {
     if (chess.move(move)) {
       setTimeout(() => {
-        const newMove = getBestMove(chess)
+        const newMove = getBestMove(chess) //Mudar para getRandomMove para usar o algoritmo aleatório
         chess.move(newMove)
         setFen(chess.fen())
       }, 300)

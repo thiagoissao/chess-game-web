@@ -76,6 +76,17 @@ const minimax = (
   return bestMove
 }
 
+export const getRandomMove = (game: ChessInstance): string => {
+  if (game.game_over()) {
+    alert('O Jogo terminou!')
+    return ''
+  }
+
+  let possibleMoves = game.moves()
+
+  return possibleMoves[Math.floor(Math.random() * possibleMoves.length)]
+}
+
 export const getBestMove = (game: ChessInstance): string => {
   if (game.game_over()) {
     alert('O Jogo terminou!')
