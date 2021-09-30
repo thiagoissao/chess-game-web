@@ -43,7 +43,6 @@ const minimax = (
   const moves = game.moves()
   if (isMaxPlayer) {
     let bestMove = Number.NEGATIVE_INFINITY
-    console.log(bestMove)
     moves.forEach((move) => {
       game.move(move)
       bestMove = Math.max(

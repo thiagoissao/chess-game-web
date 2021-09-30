@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ChessInstance, ShortMove } from 'chess.js'
 import Chessboard from 'chessboardjsx'
 import './app.css'
@@ -13,14 +13,30 @@ const App = () => {
 
   const [fen, setFen] = useState(chess.fen())
 
-  const handleMove = (move: ShortMove) => {
-    if (chess.move(move)) {
+  const [isWhiteTurn, setIsWhiteTurn] = useState(true);
+
+  const timer = () => {
+    window.setInterval(handleMove, 1000);
+  }
+
+  const handleMove = async () => {
+    if (isWhiteTurn) {
       setTimeout(() => {
+        console.log('best Move')
         const newMove = getBestMove(chess) //Mudar para getRandomMove para usar o algoritmo aleatório
         chess.move(newMove)
         setFen(chess.fen())
+        setIsWhiteTurn(false)
       }, 300)
-      setFen(chess.fen())
+    }
+    else {
+      setTimeout(() => {
+        console.log('random move')
+        const newMove = getRandomMove(chess) //Mudar para getRandomMove para usar o algoritmo aleatório
+        chess.move(newMove)
+        setFen(chess.fen())
+        setIsWhiteTurn(true)
+      }, 300)
     }
   }
 
@@ -31,13 +47,9 @@ const App = () => {
       <Chessboard
         width={600}
         position={fen}
-        onDrop={(move) =>
-          handleMove({
-            from: move.sourceSquare,
-            to: move.targetSquare,
-            promotion: 'q',
-          })
-        }
+        onPieceClick={() => {
+          timer();
+        }}
       />
     </div>
   )
