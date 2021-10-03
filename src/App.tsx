@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { ChessInstance, ShortMove } from 'chess.js'
+import React, { useCallback, useEffect, useState } from 'react'
+import { ChessInstance } from 'chess.js'
 import Chessboard from 'chessboardjsx'
 import './app.css'
 import { getBestMove, getRandomMove } from './chess/game-logic'
@@ -15,41 +15,49 @@ const App = () => {
 
   const [isWhiteTurn, setIsWhiteTurn] = useState<boolean | undefined>(undefined)
 
-  const handleMove = async () => {
+  const handleMove = useCallback(async () => {
     if (chess.game_over()) {
       alert('O Jogo terminou!')
       return
     }
 
     if (isWhiteTurn) {
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         console.log('best Move')
         const newMove = getBestMove(chess) //Mudar para getRandomMove para usar o algoritmo aleatório
         chess.move(newMove)
         setFen(chess.fen())
         setIsWhiteTurn(false)
-      }, 1000)
+      }, 500)
+      return timeout
     } else {
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         console.log('random move')
         const newMove = getRandomMove(chess) //Mudar para getRandomMove para usar o algoritmo aleatório
         chess.move(newMove)
         setFen(chess.fen())
         setIsWhiteTurn(true)
-      }, 1000)
+      }, 500)
+      return timeout
     }
-  }
+  }, [chess, isWhiteTurn])
 
-  const playNextTurn = async () => {
-    await handleMove()
+  const reset = () => {
+    chess.reset()
+    setFen(chess.fen())
+    setIsWhiteTurn(undefined)
   }
 
   useEffect(() => {
+    const playNextTurn = async () => {
+      return await handleMove()
+    }
+
+    // se for undefined então o jogo não começou
     if (isWhiteTurn !== undefined) {
-      // se for undefined então o jogo não começou
       playNextTurn()
     }
-  }, [isWhiteTurn])
+  }, [handleMove, isWhiteTurn])
 
   console.log(isWhiteTurn)
   return (
@@ -61,7 +69,11 @@ const App = () => {
           Começar
         </button>
       )}
-      {isWhiteTurn !== undefined && <h4>O Jogo começou</h4>}
+      {isWhiteTurn !== undefined && (
+        <button className='button-reset' onClick={reset}>
+          Reiniciar
+        </button>
+      )}
       <Chessboard width={600} position={fen} />
     </div>
   )

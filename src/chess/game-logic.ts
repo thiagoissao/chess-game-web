@@ -39,39 +39,37 @@ const minimax = (
   beta: number,
   isMaxPlayer: boolean
 ) => {
-  if (depth === 0) return -evaluateBoard(game.board())
+  if (depth === 0) return evaluateBoard(game.board())
   const moves = game.moves()
+
   if (isMaxPlayer) {
     let bestMove = Number.NEGATIVE_INFINITY
-    moves.forEach((move) => {
-      game.move(move)
-      bestMove = Math.max(
-        bestMove,
-        minimax(depth - 1, game, alpha, beta, !isMaxPlayer)
-      )
+    for (let i = 0; i < moves.length; i++) {
+      game.move(moves[i])
+      const minimaxResult = minimax(depth - 1, game, alpha, beta, !isMaxPlayer)
+      bestMove = Math.max(bestMove, minimaxResult)
       game.undo()
 
       alpha = Math.max(alpha, bestMove)
       if (alpha >= beta) {
         return bestMove
       }
-    })
+    }
     return bestMove
   }
 
   let bestMove = Number.POSITIVE_INFINITY
-  moves.forEach((move) => {
-    game.move(move)
-    bestMove = Math.min(
-      bestMove,
-      minimax(depth - 1, game, alpha, beta, !isMaxPlayer)
-    )
+  for (let i = 0; i < moves.length; i++) {
+    game.move(moves[i])
+    const minimaxResult = minimax(depth - 1, game, alpha, beta, !isMaxPlayer)
+    bestMove = Math.min(bestMove, minimaxResult)
     game.undo()
     beta = Math.min(beta, bestMove)
     if (alpha >= beta) {
       return bestMove
     }
-  })
+  }
+
   return bestMove
 }
 

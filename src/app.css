@@ -22,3 +22,18 @@
 .button:hover {
   cursor: pointer;
 }
+
+.button-reset {
+  background-color: red;
+  height: 48px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border: none;
+  width: 120px;
+  font-weight: bold;
+  color: white;
+}
+
+.button-reset:hover {
+  cursor: pointer;
+}
