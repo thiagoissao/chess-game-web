@@ -8,3 +8,17 @@
 .subtitle {
   color: #424242;
 }
+
+.button {
+  background-color: bisque;
+  height: 48px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border: none;
+  width: 120px;
+  font-weight: bold;
+}
+
+.button:hover {
+  cursor: pointer;
+}

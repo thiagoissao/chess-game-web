@@ -76,41 +76,36 @@ const minimax = (
 }
 
 export const getRandomMove = (game: ChessInstance): string => {
-  if (game.game_over()) {
-    alert('O Jogo terminou!')
-    return ''
-  }
-
   let possibleMoves = game.moves()
 
   return possibleMoves[Math.floor(Math.random() * possibleMoves.length)]
 }
 
 export const getBestMove = (game: ChessInstance): string => {
-  if (game.game_over()) {
-    alert('O Jogo terminou!')
-    return ''
-  }
-
-  let newMoves = game.moves()
-  let bestMove = Number.NEGATIVE_INFINITY
-  let bestMoveFound: string = ''
-
-  newMoves.forEach((move) => {
-    game.move(move)
-    const value = minimax(
-      TREE_DEPTH - 1,
-      game,
-      Number.NEGATIVE_INFINITY,
-      Number.POSITIVE_INFINITY,
-      false
-    )
-    game.undo()
-    if (value >= bestMove) {
-      bestMove = value
-      bestMoveFound = move
+  const best = game.moves().reduce(
+    (prev, move) => {
+      game.move(move)
+      const value = minimax(
+        TREE_DEPTH - 1,
+        game,
+        Number.NEGATIVE_INFINITY,
+        Number.POSITIVE_INFINITY,
+        false
+      )
+      game.undo()
+      if (value >= prev.bestMove) {
+        return {
+          bestMove: value,
+          bestMoveFound: move,
+        }
+      }
+      return prev
+    },
+    {
+      bestMove: Number.NEGATIVE_INFINITY,
+      bestMoveFound: '',
     }
-  })
+  )
 
-  return bestMoveFound
+  return best.bestMoveFound
 }
